@@ -36,14 +36,14 @@ def array_dgs_corpus(file):
     total_keypoints = 137
 
     # get frames data from camera A
-    cam_a = data[0]
-    frames = cam_a['frames']
+    cam = data[1]
+    frames = cam['frames']
     frames_list = list(frames.keys())
     total_frames = len(frames_list)
 
     # create empty numpy array
-    skel_data = np.empty(shape=(total_frames, 1, total_keypoints, 2))
-    conf_data = np.empty(shape=(total_frames, 1, total_keypoints))
+    skel_data = np.empty(shape=(total_frames, 1, total_keypoints, 2), dtype=np.float32)
+    conf_data = np.empty(shape=(total_frames, 1, total_keypoints), dtype=np.float32)
 
     # create np.array
     for frame in frames_list:
@@ -72,7 +72,7 @@ if __name__ == '__main__':
     skel_data, conf_data = array_dgs_corpus(file)
 
     # create tfrecord
-    with tf.io.TFRecordWriter('example.tfrecord') as writer:
+    with tf.io.TFRecordWriter('example2.tfrecord') as writer:
         for video_id in range(1):
             
             data = tf.io.serialize_tensor(tf.convert_to_tensor(skel_data)).numpy()
