@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM tensorflow/tensorflow:latest-gpu
 
 SHELL ["/bin/bash", "-c"]
 
