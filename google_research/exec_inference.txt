@@ -1,6 +1,6 @@
 # inicia o container
-cd /home/jessica/Documents/DCC-UFMG/Aprendizado\ de\ Máquina/google-research/sign_language_detection/
-sudo docker run -it --runtime=nvidia --gpus all -v "$PWD":/sign_language_detection/ sign-language-detection
-cd sign_language_detection
+cd /home/jessica/Documents/DCC-UFMG/Aprendizado\ de\ Máquina/sign_language_segmentation/google_research/
+sudo docker run -it --runtime=nvidia --gpus all -v "$PWD":/google_research/ sl-segmentation
+cd google_research
 
 

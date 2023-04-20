@@ -1,7 +1,3 @@
-#from tensorflow import keras
-#model = keras.models.load_model('models/py/model.h5', compile=False)
-#print(model.summary())
-
 import functools
 import os
 from typing import Any
@@ -14,9 +10,11 @@ from pose_format.tensorflow.masked.tensor import MaskedTensor
 from pose_format.tensorflow.pose_body import TensorflowPoseBody
 from pose_format.tensorflow.pose_body import TF_POSE_RECORD_DESCRIPTION
 from pose_format.utils.reader import BufferReader
-import tensorflow as tf
 
-from sign_language_detection.args import FLAGS
+import tensorflow as tf
+from tensorflow import keras
+
+from args import FLAGS
 
 
 @functools.lru_cache(maxsize=1)
@@ -100,10 +98,10 @@ def process_datum(datum,
   Returns:
      src tensors
   """
-  masked_tensor = MaskedTensor(
-      tensor=datum["pose_data_tensor"], mask=datum["pose_data_mask"])
+  #masked_tensor = MaskedTensor(
+  #    tensor=datum["pose_data_tensor"], mask=datum["pose_data_mask"])
   pose_body = TensorflowPoseBody(
-      fps=datum["fps"], data=masked_tensor, confidence=datum["pose_confidence"])
+      fps=datum["fps"], data=datum["pose_data"], confidence=datum["pose_confidence"])
   pose = Pose(header=get_openpose_header(), body=pose_body)
 
   fps = pose.body.fps
@@ -113,10 +111,15 @@ def process_datum(datum,
 
   return flow
 
+# load model
+model = keras.models.load_model('models/py/model.h5', compile=False)
+
 # read tfrecord file
 dataset = tf.data.TFRecordDataset(filenames=['example.tfrecord'])
 features = TF_POSE_RECORD_DESCRIPTION # https://github.com/sign-language-processing/pose/blob/master/src/python/pose_format/tensorflow/pose_body.py
 dataset = dataset.map(lambda serialized: tf.io.parse_single_example(serialized, features))
-flow = process_datum(dataset)
+print(dataset)
+flow = dataset.map(process_datum)
+print(flow)
 
 #pred = model.predict(flow)
