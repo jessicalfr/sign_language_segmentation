@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:latest-gpu
+FROM tensorflow/tensorflow:2.9.2-gpu
 
 SHELL ["/bin/bash", "-c"]
 

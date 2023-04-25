@@ -1,6 +1,10 @@
+# vai pra pasta do google research
 # inicia o container
-cd /home/jessica/Documents/DCC-UFMG/Aprendizado\ de\ Máquina/sign_language_segmentation/google_research/
 sudo docker run -it --runtime=nvidia --gpus all -v "$PWD":/google_research/ google-detection
 cd google_research
+
+# cria o tfrecord
+python3 ./preprocessing/build_tfrecord.py --folder ./data/ --fps 30
+
 # executa inferencia em video de teste
-python3 inference.py
+python3 inference.py --dataset_path ./data/<video-name>.tfrecord

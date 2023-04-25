@@ -145,5 +145,5 @@ if __name__ == "__main__":
         output[frame] = softmax(pred[frame])
     
     # save output
-    np.savetxt('output_example2.csv', output, delimiter=',')
+    np.savetxt('output.csv', output, delimiter=',')
     
