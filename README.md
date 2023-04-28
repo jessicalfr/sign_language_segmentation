@@ -39,6 +39,9 @@ O [MEDIAPI-SKEL] (https://www.ortolang.fr/market/corpora/mediapi-skel/) é um da
 Sistema de detecção de *keypoints* do corpo humano, mãos, rosto e pés em imagens.
 
 > Z. Cao, G. Hidalgo Martinez, T. Simon, S. Wei, & Y. A. Sheikh (2019). OpenPose: Realtime Multi-Person 2D Pose Estimation using Part Affinity Fields. IEEE Transactions on Pattern Analysis and Machine Intelligence.
+
 > Tomas Simon, Hanbyul Joo, Iain Matthews, & Yaser Sheikh (2017). Hand Keypoint Detection in Single Images using Multiview Bootstrapping. In CVPR.
+
 > Zhe Cao, Tomas Simon, Shih-En Wei, & Yaser Sheikh (2017). Realtime Multi-Person 2D Pose Estimation using Part Affinity Fields. In CVPR.
+
 > Shih-En Wei, Varun Ramakrishna, Takeo Kanade, & Yaser Sheikh (2016). Convolutional pose machines. In CVPR.
