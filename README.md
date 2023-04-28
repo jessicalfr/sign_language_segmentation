@@ -12,9 +12,9 @@ Sistema de segmentação de vídeos de língua de sinais em clips que contenham 
 
 
 ## Baseline: Real-Time Sign Language Detection using Human Pose Estimation
-[Artigo](https://slrtp.com/papers/full_papers/SLRTP.FP.04.017.paper.pdf) | [Código](https://github.com/google-research/google-research/tree/master/sign_language_detection)
+[Código](https://github.com/google-research/google-research/tree/master/sign_language_detection)
 
-Uma imprementação em Tensorflow do modelo apresentado em "Real-Time Sign Language Detection using Human Pose Estimation", publicado no SLRTP 2020.
+Uma implementação em Tensorflow do modelo apresentado em ["Real-Time Sign Language Detection using Human Pose Estimation"](https://slrtp.com/papers/full_papers/SLRTP.FP.04.017.paper.pdf), publicado no SLRTP 2020.
 
 > Amit Moryossef, Ioannis Tsochantaridis, Roee Aharoni, Sarah Ebling, & S. Narayanan (2020). Real-Time Sign Language Detection using Human Pose Estimation. In Sign Language Recognition, Translation & Production (SLRTP 2020).
 
@@ -28,7 +28,7 @@ O [Public DGS Corpus](https://www.sign-lang.uni-hamburg.de/meinedgs/ling/start-n
 
 ### MEDIAPI-SKEL
 
-O [MEDIAPI-SKEL] (https://www.ortolang.fr/market/corpora/mediapi-skel/) é um dataset de Língua de Sinais Francesa de 27 horas de vídeos. Ele contém os esqueletos extraídos com OpenPose dos vídeos originais, além da anotação das sentenças em francês.
+O [MEDIAPI-SKEL](https://www.ortolang.fr/market/corpora/mediapi-skel/) é um dataset de Língua de Sinais Francesa de 27 horas de vídeos. Ele contém os esqueletos extraídos com OpenPose dos vídeos originais, além da anotação das sentenças em francês.
 
 > Bull, H., Braffort, A. and Gouiffès, M. (2020). MEDIAPI-SKEL - A 2D-Skeleton Video Database of French Sign Language With Aligned French Subtitles. In Proceedings of the Twelfth International Conference on Language Resources and Evaluation (LREC'2020), Marseille, France, May.
 
