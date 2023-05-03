@@ -20,5 +20,4 @@ sudo docker run -it --runtime=nvidia --gpus all -v "$PWD":/sl-segmentation/ -v "
 cd sl-segmentation
 
 # cria o tfrecord
-python3 ./preprocessing/build_tfrecord_train.py --skel /public_dgs_corpus/skel/ --type_skel DGS --annot /public_dgs_corpus/annotations/ --type_annot eaf --fps 50 --output dgs_corpus
-
+python3 ./preprocessing/build_tfrecord_train.py --skel /public_dgs_corpus/skel/ --type_skel DGS --annot /public_dgs_corpus/annotations/ --type_annot eaf --fps 50 --output /sl-segmentation/data/dgs_corpus

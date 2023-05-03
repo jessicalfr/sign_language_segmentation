@@ -129,11 +129,11 @@ def get_json_data(video, json_type):
                 # get list of frames
                 frames_data = data[cam_number]['frames']
                 frames_list = frames_data.keys()
-                total_frames = len(frames_list)
+                total_frames = int(list(frames_list)[-1]) + 1
 
                 # create empty numpy array
-                skel_data = np.empty(shape=(total_frames, 1, total_keypoints, 2), dtype=np.float32)
-                conf_data = np.empty(shape=(total_frames, 1, total_keypoints), dtype=np.float32)
+                skel_data = np.zeros(shape=(total_frames, 1, total_keypoints, 2), dtype=np.float32)
+                conf_data = np.zeros(shape=(total_frames, 1, total_keypoints), dtype=np.float32)
 
                 # get all skeleton values
                 for frame in frames_list:
@@ -224,8 +224,9 @@ def get_annotations(file, fps, info, annot_type):
                 
             # if tier doesn't exist in file, notify 
             else:
-            	without_annot = tiers_list.index(tier_name)
-            	error_list.append(without_annot)
+                labels.append(None)
+                without_annot = tiers_list.index(tier_name)
+                error_list.append(without_annot)
             	
 
         # vtt files (MEDIAPI) - NOT FINISHED
@@ -246,6 +247,8 @@ if __name__ == '__main__':
 
     # create tfrecord file for training
     file_name = args.output + '.tfrecord'
+    count = 0
+    print('Processing...')
     with tf.io.TFRecordWriter(file_name) as writer:
         for video in videos_list:
             # get skeleton data
@@ -276,5 +279,8 @@ if __name__ == '__main__':
                     # write to file
                     example = tf.train.Example(features=tf.train.Features(feature=features))
                     writer.write(example.SerializeToString())
+                    
+            count = count + 1
+            print(f'{round(100*count/len(videos_list))}% processed.')
     
     print(f'tfrecord created: {file_name}')
