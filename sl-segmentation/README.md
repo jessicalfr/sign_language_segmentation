@@ -12,8 +12,8 @@ Esse repositório contém um dockerfile com a descrição de um ambiente docker 
 O pré-processamento organiza os dados para treino e validação no formato `tfrecord` que contém os seguintes campos:
 - `fps` (`Int64List`): framerate do vídeo
 - `pose_data` (`BytesList`): estimativa de pose, em um tensor do formato `(frames, 1, keypoints, 2)`
--  `pose_confidence` (`BytesList`): confiança da estimativa de pose, em um tenso do formato `(frames, 1, keypoints)`
-- `is_signing` (`BytesList`): representação se a pessoa estava sinalizando ou não a cada frame
+-  `pose_confidence` (`BytesList`): confiança da estimativa de pose, em um tensor do formato `(frames, 1, keypoints)`
+- `is_signing` (`BytesList`): representação se a pessoa estava sinalizando (1) ou não (0) a cada frame
 
 Para o processamento do Public DGS Dataset:
 
