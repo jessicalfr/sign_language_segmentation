@@ -22,7 +22,7 @@ FLAGS = flags.FLAGS
 flags.DEFINE_integer('seed', 1, 'Random seed')
 flags.DEFINE_string('device', '/CPU:0', 'Tensorflow device')
 flags.DEFINE_string('model_path', '/tmp/model.h5', 'Path to save trained model')
-flags.DEFINE_integer('epochs', 100, 'Maximum number of epochs')
+flags.DEFINE_integer('epochs', 500, 'Maximum number of epochs')
 flags.DEFINE_integer('steps_per_epoch', 32, 'Number of batches per epoch')
 flags.DEFINE_float('learning_rate', 0.001, 'Learning rate')
 flags.DEFINE_integer('stop_patience', 10, 'Patience for early stopping')

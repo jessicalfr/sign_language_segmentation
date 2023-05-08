@@ -6,10 +6,10 @@ sudo docker run -it --runtime=nvidia --gpus all -v "$PWD":/sl-segmentation/ sl-s
 cd sl-segmentation
 
 # cria o tfrecord (por enquanto apenas para o formato default do openpose)
-python3 ./preprocessing/build_tfrecord.py --folder ./data/ --fps 30
+python3 ./preprocessing/build_tfrecord.py --skel /public_dgs_corpus/skel/ --type_skel DGS --fps 50 --output /sl-segmentation/data/test.tfrecord
 
 # executa inferencia em video de teste
-python3 inference.py --dataset_path ./data/<video-name>.tfrecord
+python3 inference.py --dataset_path ./data/test.tfrecord
 
 
 #### Criando o tfrecord pra treino (DGS) ####
@@ -20,4 +20,4 @@ sudo docker run -it --runtime=nvidia --gpus all -v "$PWD":/sl-segmentation/ -v "
 cd sl-segmentation
 
 # cria o tfrecord
-python3 ./preprocessing/build_tfrecord_train.py --skel /public_dgs_corpus/skel/ --type_skel DGS --annot /public_dgs_corpus/annotations/ --type_annot eaf --fps 50 --output /sl-segmentation/data/dgs_corpus
+python3 ./preprocessing/build_tfrecord_train.py --skel /public_dgs_corpus/skel/ --type_skel DGS --annot /public_dgs_corpus/annotations/ --fps 50 --output /sl-segmentation/data/dgs_corpus.tfrecord

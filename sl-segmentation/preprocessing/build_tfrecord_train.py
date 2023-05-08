@@ -22,37 +22,45 @@ import numpy as np
 import tensorflow as tf
 import json
 import pympi
+import pandas as pd
 
 def get_args():
     parse = argparse.ArgumentParser()
-    parse.add_argument('--skel', type=str, required=True, help = 'Folder with subfolders of json files')
-    parse.add_argument('--type_skel', type=str, required=True, help = 'Type of skeleton data ("MEDIAPI" or "DGS")')
-    parse.add_argument('--annot', type=str, required=True, help = 'Folder with annotation files')
-    parse.add_argument('--type_annot', type=str, required=True, help = 'TYpe of annotation files ("eaf" or "vtt")')
-    parse.add_argument('--fps', type=int, required=True, help='FPS of the video')
-    parse.add_argument('--output', type=str, required=True, help='Name of the tfrecord file', default='dataset')
+    parse.add_argument('--skel', type=str, required=True, help = 'Folder with skeleton information (JSON files)')
+    parse.add_argument('--type_skel', type=str, required=True, help = 'Type of skeleton data ("OpenPose" or "DGS")')
+    parse.add_argument('--annot', type=str, required=True, help = 'Folder with ELAN annotation files')
+    parse.add_argument('--fps', type=int, required=True, help='FPS of the videos')
+    parse.add_argument('--output', type=str, required=True, help='Name of resulting the tfrecord file', default='dataset')
     args = parse.parse_args()
     return args
 
+def get_sec(time_str):
+    h, m, s = time_str.split(':')
+    return int(h) * 3600 + int(m) * 60 + float(s)
+
+def get_start_finish_sub(string_times, true_fps):
+    s = string_times.split(' --> ')
+    return [round(get_sec(s[0])*true_fps), round(get_sec(s[1])*true_fps)-1]
+
 def get_json_data(video, json_type):
     '''
-    Organizes human pose keypoints data in numpy arrays.
+    Organizes human pose keypoints data in numpy arrays. It assumes only one person in each video.
 
     Input:
-        video (str): Path to folder with json files (MEDIAPI-SKEL) or path to json file (DGS) with body, face, and hand keypoints.
+        video (str): Path to folder with json files (OpenPose) or path to json file (DGS) with body, face, and hand keypoints.
         json_type (str): Identify how the json data is organized:
-                            - 'MEDIAPI': One json file for each frame of the video (MEDIAPI, OpenPose default).
+                            - 'OpenPose': One json file for each frame of the video (OpenPose default).
                             - 'DGS': One json file per video with keypoints for all frames (Public DGS Corpus format).
 
     Output:
         skel_data (list of np.arrays): List of arrays of shape (#frames, 1, 137, 2) with coordinates for each keypoint.
         conf_data (list of np.arrays): List of arrays of shape (#frames, 1, 137) with human pose confidence estimation for each keypoint.
 
-        json_type == 'DGS' generates a list of max size 2. json_type == 'mediapi' generates a list of size 1.
+        json_type == 'DGS' generates a list of max size 2 (Cameras A and B). json_type == 'OpenPose' generates a list of size 1.
     '''
 
-    if json_type not in ('MEDIAPI','DGS'):
-        print("'json_type' argument must be in ('MEDIAPI','DGS')")
+    if json_type not in ('OpenPose','DGS'):
+        print("'json_type' argument must be in ('OpenPose','DGS')")
         return 0
     
     # list number of keypoints for body part
@@ -64,10 +72,10 @@ def get_json_data(video, json_type):
     total_keypoints = 137
 
     ## one json file for each video frame
-    if json_type == 'MEDIAPI':
+    if json_type == 'OpenPose':
         # list all json files in video folder
         json_list = glob(video + '*')
-        json_list.sort(key=os.path.getmtime)
+        json_list.sort()
         total_frames = len(json_list)
 
         # create output list
@@ -112,6 +120,7 @@ def get_json_data(video, json_type):
 
     ## one json file for all the frames in the video (Public DGS Corpus)
     if json_type == 'DGS':
+        print(video)
         # read json file
         file = open(video)
         data = json.load(file)
@@ -163,104 +172,91 @@ def get_json_data(video, json_type):
     return skel_list, conf_list, info
 
 
-def get_annotations(file, fps, info, annot_type):
+def get_annotations(file, fps, info):
     '''
-    Tranform sign language video annotations in binary variable (signing/not signing)
+    Tranform sign language video annotations in binary variable (signing/not signing) based on Public DGS Corpus tiers.
 
     Input:
-        video (str): Path to file with annotations.
-        annot_type (str): Format of the annotation file:
-                            - 'eaf': Annotation file from ELAN software from the Public DGS Corpus
-                            - 'vtt': Subtitle file format from the MEDIAPI-SKEL dataset
+        video (str): Path to file with Elan annotation files.
 
     Output:
         labels (list of np.arrays): List of arrays of shape (#frames) with binary variable indicating if the person is signing at each frame.
         error_list (list): List of indexes where no annotation was found.
-
-    annot_type == 'eaf' generates a list of max size 2. annot_type == 'vtt' generates a list of size 1.
     '''
 
-    if annot_type not in ('eaf','vtt'):
-        print("'annot_type' argument must be in ('eaf','vtt')")
-        return 0
+    # cameras in json file
+    tiers_list = []
+    for i in range(len(info)):
+        if info[i][0] == 'a1':
+            tiers_list.append('Deutsche_Übersetzung_A') # tiers in DGS
+        elif info[i][0] == 'b1':
+            tiers_list.append('Deutsche_Übersetzung_B') # tiers in DGS
     
-    # ELAN files
-    if annot_type == 'eaf':
-        # cameras in json file
-        tiers_list = []
-        for i in range(len(info)):
-            if info[i][0] == 'a1':
-                tiers_list.append('Deutsche_Übersetzung_A') # tiers in DGS
-            elif info[i][0] == 'b1':
-                tiers_list.append('Deutsche_Übersetzung_B') # tiers in DGS
-        
-        eaf = pympi.Elan.Eaf(file)
-        file_tiers = list(eaf.tiers.keys()) # tiers on the file
+    eaf = pympi.Elan.Eaf(file)
+    file_tiers = list(eaf.tiers.keys()) # tiers on the file
 
-        labels = []
-        error_list = []
-        index = 0
-        for tier_name in tiers_list:
-            # if tier exists in the file
-            if tier_name in file_tiers:
-                start = []
-                end = []
-                # extract start and end of annotations
-                tier = eaf.tiers[tier_name][0]
-                for id in tier.keys():
-                    start.append(round(eaf.timeslots[tier[id][0]]/1000) * fps)
-                    end.append((round(eaf.timeslots[tier[id][1]]/1000) * fps) - round(0.06*fps)) # at least 0.06 seconds between annotations
+    labels = []
+    error_list = []
+    index = 0
+    for tier_name in tiers_list:
+        # if tier exists in the file
+        if tier_name in file_tiers:
+            start = []
+            end = []
+            # extract start and end of annotations
+            tier = eaf.tiers[tier_name][0]
+            for id in tier.keys():
+                start.append(round(eaf.timeslots[tier[id][0]]/1000) * fps)
+                end.append((round(eaf.timeslots[tier[id][1]]/1000) * fps) - round(0.1*fps)) # at least 0.1 seconds between annotations
 
-                # build array
-                annotation = np.zeros(shape=(info[index][1]), dtype='byte')
-                for j in range(len(start)):
-                    pointer = start[j]
-                    while (pointer <= end[j]) and (pointer < annotation.shape[0]):
-                        annotation[pointer] = 1
-                        pointer = pointer + 1
+            # build array
+            annotation = np.zeros(shape=(info[index][1]), dtype='byte')
+            for j in range(len(start)):
+                pointer = start[j]
+                while (pointer <= end[j]) and (pointer < annotation.shape[0]):
+                    annotation[pointer] = 1
+                    pointer = pointer + 1
+            
+            labels.append(annotation)
+            index = index + 1
                 
-                labels.append(annotation)
-                index = index + 1
-                
-            # if tier doesn't exist in file, notify 
-            else:
-                labels.append(None)
-                without_annot = tiers_list.index(tier_name)
-                error_list.append(without_annot)
-            	
+        # if tier doesn't exist in file, notify 
+        else:
+            labels.append(None)
+            without_annot = tiers_list.index(tier_name)
+            error_list.append(without_annot)
 
-        # vtt files (MEDIAPI) - NOT FINISHED
-        if annot_type == 'vtt':
-            labels = []
-
-        return labels, error_list
+    return labels, error_list
 
 
 if __name__ == '__main__':
     args = get_args()
 
+    # check output file name
+    if args.output[-9:] == '.tfrecord':
+        file_name = args.output
+    else:
+        file_name = args.output + '.tfrecord'
+
     # list all videos
-    if args.type_skel == 'MEDIAPI':
+    if args.type_skel == 'OpenPose':
         videos_list = glob(args.skel + '*/')
     elif args.type_skel == 'DGS':
         videos_list = glob(args.skel + '*.json')
 
     # create tfrecord file for training
-    file_name = args.output + '.tfrecord'
     count = 0
     print('Processing...')
     with tf.io.TFRecordWriter(file_name) as writer:
         for video in videos_list:
+
             # get skeleton data
             skel_data, conf_data, info = get_json_data(video, json_type=args.type_skel)
-    
+
             # get annotation data
-            if args.type_skel == 'MEDIAPI':
-                annot_file = '00001.fr.vtt' # fix later
-            elif args.type_skel == 'DGS':
-                annot_file = args.annot + video[len(args.skel):-14] + '.eaf' # Public DGS Corpus deafult name
+            annot_file = args.annot + video[len(args.skel):-14] + '.eaf' # Public DGS Corpus deafult name
             
-            annot_data, error_list = get_annotations(file=annot_file, fps=args.fps, info=info, annot_type=args.type_annot)
+            annot_data, error_list = get_annotations(file=annot_file, fps=args.fps, info=info)
 
             # organize data for each camera
             for i in range(len(skel_data)):
