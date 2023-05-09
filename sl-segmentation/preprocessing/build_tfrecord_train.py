@@ -42,7 +42,7 @@ def get_start_finish_sub(string_times, true_fps):
     s = string_times.split(' --> ')
     return [round(get_sec(s[0])*true_fps), round(get_sec(s[1])*true_fps)-1]
 
-def get_json_data(video, json_type):
+def get_json_data(video, json_type, resolution=(1280,720)):
     '''
     Organizes human pose keypoints data in numpy arrays. It assumes only one person in each video.
 
@@ -51,6 +51,8 @@ def get_json_data(video, json_type):
         json_type (str): Identify how the json data is organized:
                             - 'OpenPose': One json file for each frame of the video (OpenPose default).
                             - 'DGS': One json file per video with keypoints for all frames (Public DGS Corpus format).
+        resolution (tuple): (Optional) The resolution of the videos processed for keypoint normalization.
+                            Not used for json_type == 'DGS'.
 
     Output:
         skel_data (list of np.arrays): List of arrays of shape (#frames, 1, 137, 2) with coordinates for each keypoint.
@@ -73,6 +75,10 @@ def get_json_data(video, json_type):
 
     ## one json file for each video frame
     if json_type == 'OpenPose':
+        # get frames width
+        width = resolution[0]
+        height = resolution[1]
+
         # list all json files in video folder
         json_list = glob(video + '*')
         json_list.sort()
@@ -135,6 +141,10 @@ def get_json_data(video, json_type):
         for cam_number in range(num_cameras):
             # get data from cameras A and B
             if data[cam_number]['camera'] in ('a1','b1'):
+                # get frames width
+                width = data[cam_number]['width']
+                height = data[cam_number]['height']
+
                 # get list of frames
                 frames_data = data[cam_number]['frames']
                 frames_list = frames_data.keys()
@@ -154,8 +164,8 @@ def get_json_data(video, json_type):
                         for point in range(num_points):
                             coord = point*3
                             if len(skel[body_part]) > 0:
-                                skel_data[frame_num, 0, count, 0] = skel[body_part][coord] # first coordinate
-                                skel_data[frame_num, 0, count, 1] = skel[body_part][coord+1] # second coordinate
+                                skel_data[frame_num, 0, count, 0] = (skel[body_part][coord]/width) # first coordinate
+                                skel_data[frame_num, 0, count, 1] = (skel[body_part][coord+1]/height) # second coordinate
                                 conf_data[frame_num, 0, count] = skel[body_part][coord+2] # confidence
                             # if data is missing, fill with zeros
                             else:

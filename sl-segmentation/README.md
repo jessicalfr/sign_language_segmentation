@@ -15,6 +15,8 @@ O pré-processamento organiza os dados para treino e validação no formato `tfr
 -  `pose_confidence` (`BytesList`): confiança da estimativa de pose, em um tensor do formato `(frames, 1, keypoints)`
 - `is_signing` (`BytesList`): representação se a pessoa estava sinalizando (1) ou não (0) a cada frame
 
+Os valores das coordenadas dos *keypoints* são normalizados em relação à resolução do vídeo.
+
 Para o processamento do Public DGS Dataset:
 
 `python3 ./preprocessing/build_tfrecord_train.py --skel <pasta-jsons-esqueleto> --type_skel DGS --annot <pasta-anotacoes-eaf> --fps 50 --output <pasta-output>`
