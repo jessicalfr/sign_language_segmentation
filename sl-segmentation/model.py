@@ -63,7 +63,7 @@ def build_model():
   model.compile(
       loss='sparse_categorical_crossentropy',
       optimizer=tf.keras.optimizers.Adam(FLAGS.learning_rate),
-      metrics=['accuracy','recall','precision'],
+      metrics=['accuracy']
   )
   model.summary()
 
