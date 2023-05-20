@@ -1,6 +1,6 @@
-absl-py>=0.9.0
-tensorflow>=2.3.0
-pose_format>=0.0.1
-numpy>=1.13.0
-model_card_toolkit>=0.1.0
+absl-py==1.2.0
+tensorflow==2.9.2
+pose_format==0.2.2
+numpy==1.23.2
 pympi-ling==1.70.2
+matplotlib==3.7.1

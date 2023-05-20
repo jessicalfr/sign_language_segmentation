@@ -21,11 +21,15 @@ from absl import app
 import tensorflow as tf
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.callbacks import ModelCheckpoint
+from tensorflow.keras.callbacks import History
 from tensorflow.keras.models import load_model
 
 from args import FLAGS
 from dataset import get_datasets
 from model import build_model
+
+import matplotlib.pyplot as plt
+import numpy as np
 
 
 def set_seed():
@@ -39,6 +43,9 @@ def main(unused_argv):
   """Keras training loop with early-stopping and model checkpoint."""
 
   set_seed()
+
+  # set model name
+  model_name = FLAGS.model_path.split('/')[-1].split('.')[0]
 
   # Initialize Dataset
   train, dev, test = get_datasets()
@@ -58,19 +65,47 @@ def main(unused_argv):
       mode='max',
       verbose=1,
       save_best_only=True)
+  hs = History()
 
+  print('\nTraining:')
   with tf.device(FLAGS.device):
     model.fit(
         train,
         epochs=FLAGS.epochs,
         steps_per_epoch=FLAGS.steps_per_epoch,
         validation_data=dev,
-        callbacks=[es, mc])
+        callbacks=[es, mc, hs])
 
+  # save history
+  max_accuracy = hs.history['val_accuracy'].index(max(hs.history['val_accuracy']))
+
+  plt.plot(hs.history['accuracy'])
+  plt.plot(hs.history['val_accuracy'])
+  plt.axvline(x=max_accuracy, linestyle='--', color='gray')
+  plt.title('Model')
+  plt.ylabel('Accuracy')
+  plt.xlabel('Epoch')
+  plt.legend(['train','val'], loc='lower right')
+  plt.savefig(f'./results/{model_name}.png')
+
+  # save loss and accuracy results
+  print('\nEvaluation:')
+  print('\n - Train eval:')
+  result_train = {'loss': hs.history['loss'][max_accuracy], 'accuracy': hs.history['accuracy'][max_accuracy]}
+  print(result_train)
+
+  print('\n - Dev eval:')
+  result_dev = {'loss': hs.history['val_loss'][max_accuracy], 'accuracy': hs.history['val_accuracy'][max_accuracy]}
+  print(result_dev)
+
+  print('\n - Test eval:')
   best_model = load_model(FLAGS.model_path)
-  print('Testing')
-  best_model.evaluate(test)
+  result_test = best_model.evaluate(test, return_dict=True, verbose=0)
+  print(result_test)
 
+  # save predictions on the test set
+  predictions = best_model.predict(test, verbose=0).numpy()
+  np.save(f'./results/{model_name}', predictions)
 
 if __name__ == '__main__':
   app.run(main)

@@ -28,7 +28,9 @@ from pose_format.tensorflow.pose_body import TF_POSE_RECORD_DESCRIPTION
 from pose_format.utils.reader import BufferReader
 import tensorflow as tf
 
-from sign_language_detection.args import FLAGS
+from args import FLAGS
+
+import numpy as np
 
 
 @functools.lru_cache(maxsize=1)
@@ -57,7 +59,7 @@ def differentiate_frames(src):
 def distance(src):
   """Calculate the Euclidean distance from x:y coordinates."""
   square = src.square()
-  sum_squares = square.sum(dim=-1).fix_nan()
+  sum_squares = square.sum(axis=-1).fix_nan()
   sqrt = sum_squares.sqrt().zero_filled()
   return sqrt
 
@@ -131,7 +133,7 @@ def process_datum(datum,
   frames = datum["frames"]
 
   if augment:
-    pose, selected_indexes = pose.frame_dropout(FLAGS.frame_dropout_std)
+    pose, selected_indexes = pose.frame_dropout_normal(dropout_std = FLAGS.frame_dropout_std)
     tgt = tf.gather(tgt, selected_indexes)
 
     new_frames = tf.cast(tf.size(tgt), dtype=fps.dtype)
@@ -188,20 +190,47 @@ def split_dataset(
 ):
   """Split dataset to train, dev, and test."""
 
+  # dev indexes
+  dev_idx = np.loadtxt('./split/dev.csv')
+  keys_dev = tf.constant(dev_idx, dtype=tf.int64)
+  vals_dev = tf.ones_like(keys_dev)
+  table_dev = tf.lookup.StaticHashTable(
+    tf.lookup.KeyValueTensorInitializer(keys_dev, vals_dev),
+    default_value=0)
+  
+  # test indexes
+  test_idx = np.loadtxt('./split/test.csv')
+  keys_test = tf.constant(test_idx, dtype=tf.int64)
+  vals_test = tf.ones_like(keys_test)
+  table_test = tf.lookup.StaticHashTable(
+    tf.lookup.KeyValueTensorInitializer(keys_test, vals_test),
+    default_value=0)
+  
+  # train indexes
+  train_idx = np.loadtxt('./split/train.csv')
+  keys_train = tf.constant(train_idx, dtype=tf.int64)
+  vals_train = tf.ones_like(keys_train)
+  table_train = tf.lookup.StaticHashTable(
+    tf.lookup.KeyValueTensorInitializer(keys_train, vals_train),
+    default_value=0)
+  
+  # check index
   def is_dev(x, _):
-    # Every 3rd item
-    return (x + 2) % 4 == 0
+    table_value = table_dev.lookup(x)
+    return tf.cast(table_value, tf.bool)
 
   def is_test(x, _):
-    # Every 4th item
-    return (x + 3) % 4 == 0
+    table_value = table_test.lookup(x)
+    return tf.cast(table_value, tf.bool)
 
   def is_train(x, y):
-    return not is_test(x, y) and not is_dev(x, y)
+    table_value = table_train.lookup(x)
+    return tf.cast(table_value, tf.bool)
 
   def recover(_, y):
     return y
 
+  # apply pipeline
   train = train_pipeline(dataset.enumerate().filter(is_train).map(recover))
   dev = test_pipeline(dataset.enumerate().filter(is_dev).map(recover))
   test = test_pipeline(dataset.enumerate().filter(is_test).map(recover))
