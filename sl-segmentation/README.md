@@ -5,7 +5,7 @@ O modelo utilizado nessa solução é baseado no modelo apresentado no artigo ["
 
 ## Ambiente de execução
 
-Esse repositório contém um dockerfile com a descrição de um ambiente docker que faz a execução de todos os experimentos. As execuções foram feitas utilizando uma placa de vídeo NVIDIA GeForce RTX 3050.
+Esse repositório contém um dockerfile com a descrição de um ambiente docker que faz a execução de todos os experimentos. Foi utilizada uma placa de vídeo NVIDIA GeForce RTX 3050.
 
 ## Pré-processamento dos dados
 
