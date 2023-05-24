@@ -86,7 +86,7 @@ def main(unused_argv):
   plt.ylabel('Accuracy')
   plt.xlabel('Epoch')
   plt.legend(['train','val'], loc='lower right')
-  plt.savefig(f'./results/{model_name}.png')
+  plt.savefig(f'./results/plots/{model_name}.png')
 
   # save loss and accuracy results
   print('\nEvaluation:')
@@ -105,7 +105,7 @@ def main(unused_argv):
 
   # save predictions on the test set
   predictions = best_model.predict(test, verbose=0).numpy()
-  np.save(f'./results/{model_name}', predictions)
+  np.save(f'./results/predictions/{model_name}', predictions)
 
 if __name__ == '__main__':
   app.run(main)

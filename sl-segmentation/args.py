@@ -42,7 +42,7 @@ flags.DEFINE_multi_string(
 )
 
 # Augmentation flags
-flags.DEFINE_float('frame_dropout_std', 0.01, 'Augmentation drop frames std')
+flags.DEFINE_float('frame_dropout_std', 0.1, 'Augmentation drop frames std')
 
 # Dataset flags
 flags.DEFINE_string('dataset_path', None, 'Location of tfrecord file')

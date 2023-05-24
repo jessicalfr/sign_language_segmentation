@@ -1,10 +1,10 @@
-#### Executando a inferência ####
-
+#### Primeiro passo ####
 # vai pra pasta do sl-segmentation
 # inicia o container
-sudo docker run -it --runtime=nvidia --gpus all -v "$PWD":/sl-segmentation/ sl-segmentation
+sudo docker run -it --runtime=nvidia --gpus all -v "$PWD":/sl-segmentation/ sl-segmentation # adiciona demais pastas se necessário
 cd sl-segmentation
 
+#### Executando a inferência ####
 # cria o tfrecord (por enquanto apenas para o formato default do openpose)
 python3 ./preprocessing/build_tfrecord.py --skel /public_dgs_corpus/skel/ --type_skel DGS --fps 50 --output /sl-segmentation/data/test.tfrecord
 
@@ -13,11 +13,9 @@ python3 inference.py --dataset_path ./data/test.tfrecord
 
 
 #### Criando o tfrecord pra treino (DGS) ####
+python3 ./preprocessing/build_tfrecord_train.py --skel /<path-dataset>/skel/ --type_skel DGS --annot /<path-dataset>/annotations/ --fps 50 --output /sl-segmentation/data/dgs_corpus.tfrecord
 
-# vai pra pasta do sl-segmentation
-# inicia o container
-sudo docker run -it --runtime=nvidia --gpus all -v "$PWD":/sl-segmentation/ -v "/media/jessica/Windows-SSD/Users/jessi/OneDrive/Downloads - Linux/public_dgs_corpus/":/public_dgs_corpus/ sl-segmentation
+
+#### Explorando a distribuição do dataset (DGS) ####
 cd sl-segmentation
-
-# cria o tfrecord
-python3 ./preprocessing/build_tfrecord_train.py --skel /public_dgs_corpus/skel/ --type_skel DGS --annot /public_dgs_corpus/annotations/ --fps 50 --output /sl-segmentation/data/dgs_corpus.tfrecord
+python3 explore_dataset.py --dataset_path data/dgs_corpus.tfrecord --batch_size 1
