@@ -5,29 +5,47 @@ import pandas as pd
 import os
 import time
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+os.environ['TF_GPU_ALLOCATOR'] = 'cuda_malloc_async'
+
+def make_dir(path):
+    if not os.path.isdir(path):
+        os.mkdir(path)
+
+# create folders
+make_dir('results')
+make_dir('results/logs')
+make_dir('results/models')
+make_dir('results/plots')
+make_dir('results/predictions')
 
 # list all hiperparameters
 hyperparameters = {
     'encoder_bidirectional': [True, False],
     #'encoder_layers': [1, 2, 3, 4, 5],
-    'hidden_size': [32, 64, 128, 256],
-    'input_components': ['pose_keypoints_2d', # only pose
-                         'hand_left_keypoints_2d, hand_right_keypoints_2d', # only hands
-                         'pose_keypoints_2d, face_keypoints_2d, hand_left_keypoints_2d, hand_right_keypoints_2d'], # pose, face and hands
+    'hidden_size': [32, 64, 128],
+    'input_components': ['only pose', 'only hands', 'pose, face and hands'],
     'learning_rate': [0.01, 0.001, 0.0001],
     'input_dropout': [0.1, 0.3, 0.5] # random feature dropout
 }
 
 # random grid search
-num_experiments = 2
+num_experiments = 20
 experiment_def = []
 
 for i in range(num_experiments):
     flags_string = ''
     for param in hyperparameters.keys():
         value = random.sample(hyperparameters[param],1)[0]
-        flags_string = flags_string + ' --' + param + ' ' + str(value)
+        if param == 'input_components':
+            if value == 'only pose':
+                flags_string = flags_string + ' --input_components pose_keypoints_2d'
+            elif value == 'only hands':
+                flags_string = flags_string + ' --input_components hand_left_keypoints_2d --input_components hand_right_keypoints_2d'
+            else:
+                flags_string = flags_string + ' --input_components pose_keypoints_2d --input_components face_keypoints_2d --input_components hand_left_keypoints_2d --input_components hand_right_keypoints_2d'
+        else:
+            flags_string = flags_string + ' --' + param + ' ' + str(value)
     experiment_def.append(flags_string)
 
 # save experiments metadata
