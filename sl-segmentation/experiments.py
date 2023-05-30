@@ -5,7 +5,7 @@ import pandas as pd
 import os
 import time
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 os.environ['TF_GPU_ALLOCATOR'] = 'cuda_malloc_async'
 
 random.seed(169)
@@ -28,11 +28,11 @@ hyperparameters = {
     'hidden_size': [32, 64, 128],
     'input_components': ['only pose', 'only hands', 'pose, face and hands'],
     'learning_rate': [0.01, 0.001, 0.0001],
-    'input_dropout': [0.1, 0.3, 0.5] # random feature dropout
+    'input_dropout': [0.1, 0.2, 0.3, 0.4, 0.5] # random feature dropout
 }
 
 # random grid search
-num_experiments = 20
+num_experiments = 30
 experiment_def = []
 
 for i in range(num_experiments):
