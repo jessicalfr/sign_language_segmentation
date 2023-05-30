@@ -37,7 +37,9 @@ def input_size():
 def get_model():
   """Create keras sequential model following the hyperparameters."""
 
-  model = tf.keras.Sequential(name='tgt')
+  model_name = FLAGS.model_path.split('/')[-1].split('.')[0]
+
+  model = tf.keras.Sequential(name=model_name)
   model.add(tf.keras.layers.InputLayer(input_shape=(None, input_size())))
   model.add(tf.keras.layers.Dropout(FLAGS.input_dropout))  # Random feature dropout
 
@@ -49,7 +51,8 @@ def get_model():
     model.add(rnn)
 
   # Project and normalize to labels space
-  model.add(tf.keras.layers.Dense(2, activation='softmax'))
+  model.add(tf.keras.layers.Dense(2))
+  model.add(tf.keras.layers.Softmax())
 
   return model
 
@@ -61,7 +64,8 @@ def build_model():
   model.compile(
       loss='sparse_categorical_crossentropy',
       optimizer=tf.keras.optimizers.Adam(FLAGS.learning_rate),
-      metrics=['accuracy']
+      metrics=['accuracy'],
+      run_eagerly=True
   )
   model.summary()
 

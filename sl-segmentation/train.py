@@ -30,7 +30,12 @@ from model import build_model
 
 import matplotlib.pyplot as plt
 import numpy as np
+import gc
 
+class ClearMemory(tf.keras.callbacks.Callback):
+    def on_epoch_end(self, epoch, logs=None):
+        gc.collect()
+        tf.keras.backend.clear_session()
 
 def set_seed():
   """Set seed for deterministic random number generation."""
@@ -43,6 +48,8 @@ def main(unused_argv):
   """Keras training loop with early-stopping and model checkpoint."""
 
   set_seed()
+
+  tf.config.run_functions_eagerly(True)
 
   # set model name
   model_name = FLAGS.model_path.split('/')[-1].split('.')[0]
@@ -66,6 +73,7 @@ def main(unused_argv):
       verbose=1,
       save_best_only=True)
   hs = History()
+  cl = ClearMemory()
 
   print('\nTraining:')
   with tf.device(FLAGS.device):
@@ -74,7 +82,7 @@ def main(unused_argv):
         epochs=FLAGS.epochs,
         steps_per_epoch=FLAGS.steps_per_epoch,
         validation_data=dev,
-        callbacks=[es, mc, hs])
+        callbacks=[es, mc, hs, cl])
 
   # save history
   max_accuracy = hs.history['val_accuracy'].index(max(hs.history['val_accuracy']))

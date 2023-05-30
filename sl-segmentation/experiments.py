@@ -8,6 +8,8 @@ import time
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 os.environ['TF_GPU_ALLOCATOR'] = 'cuda_malloc_async'
 
+random.seed(169)
+
 def make_dir(path):
     if not os.path.isdir(path):
         os.mkdir(path)

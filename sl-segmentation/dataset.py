@@ -168,7 +168,8 @@ def batch_dataset(dataset, batch_size):
 
 def train_pipeline(dataset):
   """Prepare the training dataset."""
-  dataset = dataset.map(load_datum).cache()
+  #dataset = dataset.map(load_datum).cache()
+  dataset = dataset.map(load_datum)
   dataset = dataset.repeat()
   dataset = dataset.map(lambda d: process_datum(d, True))
   dataset = dataset.shuffle(FLAGS.batch_size)
@@ -182,7 +183,8 @@ def test_pipeline(dataset):
   dataset = dataset.map(load_datum)
   dataset = dataset.map(process_datum)
   dataset = batch_dataset(dataset, FLAGS.test_batch_size)
-  return dataset.cache()
+  #return dataset.cache()
+  return dataset
 
 
 def split_dataset(
