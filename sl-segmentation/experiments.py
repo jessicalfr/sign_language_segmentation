@@ -46,6 +46,9 @@ for i in range(num_experiments):
                 flags_string = flags_string + ' --input_components hand_left_keypoints_2d --input_components hand_right_keypoints_2d'
             else:
                 flags_string = flags_string + ' --input_components pose_keypoints_2d --input_components face_keypoints_2d --input_components hand_left_keypoints_2d --input_components hand_right_keypoints_2d'
+        elif param == 'encoder_bidirectional':
+            if value:
+                flags_string = flags_string + ' --encoder_bidirectional' # False is the default value defined in args.py
         else:
             flags_string = flags_string + ' --' + param + ' ' + str(value)
     experiment_def.append(flags_string)
