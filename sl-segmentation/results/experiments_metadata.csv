@@ -1,0 +1,31 @@
+,experiment_number,flags
+0,0, --encoder_bidirectional --hidden_size 128 --input_components pose_keypoints_2d --input_components face_keypoints_2d --input_components hand_left_keypoints_2d --input_components hand_right_keypoints_2d --learning_rate 0.01 --input_dropout 0.5
+1,1, --encoder_bidirectional --hidden_size 128 --input_components hand_left_keypoints_2d --input_components hand_right_keypoints_2d --learning_rate 0.0001 --input_dropout 0.3
+2,2, --encoder_bidirectional --hidden_size 128 --input_components pose_keypoints_2d --learning_rate 0.01 --input_dropout 0.5
+3,3, --encoder_bidirectional --hidden_size 32 --input_components hand_left_keypoints_2d --input_components hand_right_keypoints_2d --learning_rate 0.0001 --input_dropout 0.1
+4,4, --encoder_bidirectional --hidden_size 64 --input_components pose_keypoints_2d --learning_rate 0.01 --input_dropout 0.5
+5,5, --encoder_bidirectional --hidden_size 64 --input_components hand_left_keypoints_2d --input_components hand_right_keypoints_2d --learning_rate 0.0001 --input_dropout 0.1
+6,6, --encoder_bidirectional --hidden_size 32 --input_components pose_keypoints_2d --input_components face_keypoints_2d --input_components hand_left_keypoints_2d --input_components hand_right_keypoints_2d --learning_rate 0.01 --input_dropout 0.4
+7,7, --encoder_bidirectional --hidden_size 64 --input_components pose_keypoints_2d --input_components face_keypoints_2d --input_components hand_left_keypoints_2d --input_components hand_right_keypoints_2d --learning_rate 0.001 --input_dropout 0.3
+8,8, --encoder_bidirectional --hidden_size 64 --input_components pose_keypoints_2d --learning_rate 0.001 --input_dropout 0.5
+9,9, --encoder_bidirectional --hidden_size 64 --input_components pose_keypoints_2d --input_components face_keypoints_2d --input_components hand_left_keypoints_2d --input_components hand_right_keypoints_2d --learning_rate 0.01 --input_dropout 0.1
+10,10, --encoder_bidirectional --hidden_size 32 --input_components pose_keypoints_2d --learning_rate 0.001 --input_dropout 0.3
+11,11, --encoder_bidirectional --hidden_size 64 --input_components pose_keypoints_2d --input_components face_keypoints_2d --input_components hand_left_keypoints_2d --input_components hand_right_keypoints_2d --learning_rate 0.0001 --input_dropout 0.4
+12,12, --encoder_bidirectional --hidden_size 128 --input_components hand_left_keypoints_2d --input_components hand_right_keypoints_2d --learning_rate 0.001 --input_dropout 0.1
+13,13, --encoder_bidirectional --hidden_size 32 --input_components hand_left_keypoints_2d --input_components hand_right_keypoints_2d --learning_rate 0.001 --input_dropout 0.4
+14,14, --encoder_bidirectional --hidden_size 128 --input_components pose_keypoints_2d --input_components face_keypoints_2d --input_components hand_left_keypoints_2d --input_components hand_right_keypoints_2d --learning_rate 0.01 --input_dropout 0.4
+15,15,--hidden_size 128 --input_components pose_keypoints_2d --learning_rate 0.01 --input_dropout 0.1
+16,16, --encoder_bidirectional --hidden_size 128 --input_components hand_left_keypoints_2d --input_components hand_right_keypoints_2d --learning_rate 0.001 --input_dropout 0.5
+17,17,--hidden_size 64 --input_components hand_left_keypoints_2d --input_components hand_right_keypoints_2d --learning_rate 0.001 --input_dropout 0.2
+18,18, --encoder_bidirectional --hidden_size 32 --input_components pose_keypoints_2d --learning_rate 0.001 --input_dropout 0.4
+19,19, --encoder_bidirectional --hidden_size 32 --input_components hand_left_keypoints_2d --input_components hand_right_keypoints_2d --learning_rate 0.0001 --input_dropout 0.1
+20,20,--hidden_size 64 --input_components pose_keypoints_2d --learning_rate 0.01 --input_dropout 0.3
+21,21, --encoder_bidirectional --hidden_size 128 --input_components pose_keypoints_2d --input_components face_keypoints_2d --input_components hand_left_keypoints_2d --input_components hand_right_keypoints_2d --learning_rate 0.0001 --input_dropout 0.3
+22,22,--hidden_size 32 --input_components pose_keypoints_2d --learning_rate 0.01 --input_dropout 0.3
+23,23,--hidden_size 64 --input_components pose_keypoints_2d --learning_rate 0.01 --input_dropout 0.5
+24,24,--hidden_size 32 --input_components hand_left_keypoints_2d --input_components hand_right_keypoints_2d --learning_rate 0.0001 --input_dropout 0.1
+25,25,--hidden_size 128 --input_components hand_left_keypoints_2d --input_components hand_right_keypoints_2d --learning_rate 0.01 --input_dropout 0.1
+26,26, --encoder_bidirectional --hidden_size 64 --input_components hand_left_keypoints_2d --input_components hand_right_keypoints_2d --learning_rate 0.001 --input_dropout 0.1
+27,27,--hidden_size 32 --input_components pose_keypoints_2d --input_components face_keypoints_2d --input_components hand_left_keypoints_2d --input_components hand_right_keypoints_2d --learning_rate 0.001 --input_dropout 0.3
+28,28,--hidden_size 32 --input_components hand_left_keypoints_2d --input_components hand_right_keypoints_2d --learning_rate 0.001 --input_dropout 0.3
+29,29, --encoder_bidirectional --hidden_size 128 --input_components pose_keypoints_2d --input_components face_keypoints_2d --input_components hand_left_keypoints_2d --input_components hand_right_keypoints_2d --learning_rate 0.001 --input_dropout 0.5
