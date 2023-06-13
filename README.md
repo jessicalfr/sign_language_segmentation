@@ -1,10 +1,10 @@
 # Sign Language Segmentation
 
-Sistema de segmentação de vídeos de língua de sinais em clips que contenham trechos equivalentes a sentenças na língua escrita.
+Modelo de segmentação de vídeos de língua de sinais em clips que contenham trechos equivalentes a frases na língua escrita.
 
 ## Organização do repositório
 
-- `sl-segmentation`: Implementação do modelo e dos experimentos.
+- `sl-segmentation`: Implementação do modelo de segmentação e dos experimentos.
 - `openpose`: Implementação de extração de esqueletos utilizando OpenPose.
 - `utils`: Utilidades gerais do processamento dos dados.
 
