@@ -42,7 +42,7 @@ Teste   | 0,501 | 0,549 | 0,259 |
 
 ### Arquitetura
 
-A arquitetura utilizada se baseia no modelo de detecção de língua de sinais proposto por [Moryossef1 et al (2020)](https://slrtp.com/papers/full_papers/SLRTP.FP.04.017.paper.pdf). A ideia é avaliar o desempenho de um modelo de deteção em uma tarefa de segmentação, pois esses dois problemas são definidos de forma muito semelhante.
+A arquitetura utilizada se baseia no modelo de detecção de língua de sinais proposto por [Moryossef et al (2020)](https://slrtp.com/papers/full_papers/SLRTP.FP.04.017.paper.pdf). A ideia é avaliar o desempenho de um modelo de deteção em uma tarefa de segmentação, pois esses dois problemas são definidos de forma muito semelhante.
 
 Dada a sequência de poses extraídas de um vídeo, calcula-se o *optical flow* do esqueleto a cada par de frames. O *optical flow F* para cada ponto *P* do esqueleto no tempo *t* é definido como a norma L2 do vetor resultante da diferença entre dois frames consecutivos:
 
@@ -54,7 +54,7 @@ Caso um ponto *P* não seja identificado no frame *t*, o valor do *optical flow*
 
 A sequência gerada pela extração do *optical flow* é dada como entrada a uma rede recorrente LSTM. Os experimentos realizados avaliaram modificações nos hiperparâmetros dessa rede.
 
-*Adicionar figura da arquitetura aqui*
+![Arquitetura do modelo](model.png)
 
 ### Busca por hiperparâmetros
 
