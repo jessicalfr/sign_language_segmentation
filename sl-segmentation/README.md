@@ -46,7 +46,9 @@ A arquitetura utilizada se baseia no modelo de detecção de língua de sinais p
 
 Dada a sequência de poses extraídas de um vídeo, calcula-se o *optical flow* do esqueleto a cada par de frames. O *optical flow F* para cada ponto *P* do esqueleto no tempo *t* é definido como a norma L2 do vetor resultante da diferença entre dois frames consecutivos:
 
-$$ F(P)_t = ||P_t - P_{t-1}||_2 * fps $$
+```math
+F(P)_t = ||P_t - P_{t-1}||_2 * fps
+```
 
 Caso um ponto *P* não seja identificado no frame *t*, o valor do *optical flow* é zero.
 
