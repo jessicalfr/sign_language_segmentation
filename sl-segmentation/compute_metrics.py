@@ -56,7 +56,7 @@ for (input, label) in test:
     test_labels.append(label)
 
 # list all results saved in folder
-pred_files = glob('./results/predictions/*.npy')
+pred_files = sorted(glob('./results/predictions/*.npy'))
 
 # compute metrics for each model
 print('Test metrics:')

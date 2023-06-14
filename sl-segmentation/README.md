@@ -46,7 +46,7 @@ A arquitetura utilizada se baseia no modelo de detecção de língua de sinais p
 
 Dada a sequência de poses extraídas de um vídeo, calcula-se o *optical flow* do esqueleto a cada par de frames. O *optical flow F* para cada ponto *P* do esqueleto no tempo *t* é definido como a norma L2 do vetor resultante da diferença entre dois frames consecutivos:
 
-$$F(P)_t = ||P_t - P_{t-1}||_2 * fps$$
+$$ F(P)_t = ||P_t - P_{t-1}||_2 * fps $$
 
 Caso um ponto *P* não seja identificado no frame *t*, o valor do *optical flow* é zero.
 
@@ -68,4 +68,10 @@ Foi utilizada a técnica de *random discrete grid search* para encontrar os melh
 
 ### Resultados
 
-*Adicionar aqui os resultados*
+A principal métrica utilizada foi a acurácia. Também foi calculada para a base de teste o *precision*, *recall* e *F1 score* de cada modelo. Os resultados das métricas de avaliação para todos os experimentos se encontram [aqui](https://docs.google.com/spreadsheets/d/1TRfizXqF6qu1dMrNDq354dbJPOnM9XjMhhxzA0osuIQ/edit?usp=sharing). Para reproduzir os resultados basta executar `python3 compute_metrics.py --dataset_path data/dgs_corpus.tfrecord`.
+
+O modelo de maior acurácia na base de teste acerta a classificação do frame 92,84% das vezes. A arquitetura do modelo utiliza um LSTM bidirecional, com 64 unidades. Os *keypoints* de input são de pose, mãos e rosto, a taxa de dropout dos inputs é 0,1 e a taxa de aprendizado é 0,01. A acurácia do modelo ao longo das épocas é mostrada a seguir.
+
+![Acurácia do melhor modelo ao logno do treinamento](./results/plots/model_9.png)
+
+*Abaixo discutir os tipos de erro de segmentação no melhor modelo*
