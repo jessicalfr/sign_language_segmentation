@@ -61,10 +61,10 @@ Os hiperparâmetros e respectivos valores avaliados são listados a seguir.
 - Inputs do modelo: Apenas *keypoints* da pose, apenas das mãos, ou todos (pose, mãos e rosto).
 - Taxa de dropout dos inputs: 0,1, 0,2, 0,3, 0,4 ou 0,5.
 - Tipo da camada LSTM: unidirecional ou bidirecional.
-- Tamanho da camada oculta no LSTM: 32, 64 ou 128.
+- Tamanho da camada oculta no LSTM: 32, 64 ou 128 unidades.
 - Taxa de aprendizado: 0,01, 0,001 ou 0,0001.
 
-Foi utilizada a técnica de *random discrete grid search* para encontrar os melhores hiperparâmetros. Os modelos foram treinados por 100 épocas, com tolerância de 10 épocas para *early stopping*. A acurácia na base de validação foi utilizada para avaliar o modelo a cada época.
+Foi utilizada a técnica de *random discrete grid search* para encontrar os melhores hiperparâmetros, sorteando 30 combinações dos valores possíveis. Os modelos foram treinados por 100 épocas, com tolerância de 10 épocas para *early stopping*. A acurácia na base de validação foi utilizada para avaliar o modelo a cada época.
 
 ### Resultados
 
