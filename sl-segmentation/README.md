@@ -87,6 +87,18 @@ Para executar a inferência em um vídeo do Public DGS Corpus com o melhor model
 
 Na pasta `./tests/` aparecerão os arquivos de output do modelo. Caso o arquivo `.json` contenha informação tanto da câmera A quanto da câmera B, teremos predições para as duas câmeras.
 
-Abaixo um exemplo de predição para um vídeo do dataset.
+### Análise de um exemplo
 
-![Exemplo de predição do modelo](./tests/pred_26-06-2023_17-52-28_0.png)
+Abaixo um exemplo de predição para um vídeo do dataset. Nesse exemplo, a pessoa da câmera A está sinalizando várias sentenças ao longo de todo o vídeo. O modelo é bom em capturar que a pessoa está de fato sinalizando, mas não é muito eficiente em separar sentenças (várias foram concatenadas).
+
+![Exemplo de predição do modelo - Câmera A](./tests/pred_26-06-2023_17-52-28_0.png)
+
+ Já a pessoa da câmera B se movimenta apenas concordando na maior parte do vídeo. A predição para a câmera B é mostrada abaixo.
+
+![Exemplo de predição do modelo - Câmera B](./tests/pred_26-06-2023_17-52-28_1.png)
+
+Podemos ver que o modelo identifica segmentos de sinalização em trechos que não existe sinalização, apenas movimentos naturais da pessoa prestando atenção no que é dito (balançando a cabeça, mão apoiada no queixo, etc.)
+
+Portanto, apesar da acurácia alta, o modelo precisaria de mais refinamento para identificar sentenças de maneira adequada.
+
+
