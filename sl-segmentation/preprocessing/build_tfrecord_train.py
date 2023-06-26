@@ -25,11 +25,6 @@ import pympi
 import pandas as pd
 
 def get_args():
-    parse = argparse.ArgumentParser()
-    parse.add_argument('--skel', type=str, required=True, help = 'Folder with skeleton information (JSON files)')
-    parse.add_argument('--type_skel', type=str, required=True, help = 'Type of skeleton data ("OpenPose" or "DGS")')
-    parse.add_argument('--annot', type=str, required=True, help = 'Folder with ELAN annotation files')
-    parse.add_argument('--fps', type=int, required=True, help='FPS of the videos')
     parse.add_argument('--output', type=str, required=True, help='Name of resulting the tfrecord file', default='dataset')
     args = parse.parse_args()
     return args
@@ -108,8 +103,8 @@ def get_json_data(video, json_type, resolution=(1280,720)):
                 for point in range(num_points):
                     coord = point*3
                     if len(skel[body_part]) > 0:
-                        skel_data[frame, 0, count, 0] = skel[body_part][coord] # first coordinate
-                        skel_data[frame, 0, count, 1] = skel[body_part][coord+1] # second coordinate
+                        skel_data[frame, 0, count, 0] = (skel[body_part][coord]/width) # first coordinate
+                        skel_data[frame, 0, count, 1] = (skel[body_part][coord+1]/height) # second coordinate
                         conf_data[frame, 0, count] = skel[body_part][coord+2] # confidence
                     # if data is missing, fill with zeros
                     else:
@@ -141,7 +136,7 @@ def get_json_data(video, json_type, resolution=(1280,720)):
         for cam_number in range(num_cameras):
             # get data from cameras A and B
             if data[cam_number]['camera'] in ('a1','b1'):
-                # get frames width
+                # get frames width and height
                 width = data[cam_number]['width']
                 height = data[cam_number]['height']
 

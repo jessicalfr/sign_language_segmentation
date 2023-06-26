@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-''' Creates tfrecord file for inference '''
+''' Creates tfrecord file for inference (only have pose data)'''
 
 import argparse
 from glob import glob
@@ -41,7 +41,7 @@ if __name__ == '__main__':
     else:
         file_name = args.output + '.tfrecord'
 
-    # get list of videos
+    # get list of files
     if args.type_skel == 'OpenPose':
         videos_list = glob(args.skel + '*/')
     elif args.type_skel == 'DGS':

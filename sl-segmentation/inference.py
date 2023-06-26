@@ -19,7 +19,9 @@ import sys
 FLAGS(sys.argv)
 
 import numpy as np
-from scipy.special import softmax
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+import datetime
 
 
 @functools.lru_cache(maxsize=1)
@@ -124,8 +126,69 @@ def prepare_io(datum):
   
 def recover(_, y):
     return y
+
+def get_segments(y, tolerance):
+    """
+    Extract the indexes of the segments of 1s in a sequence y.
+
+    Inputs:
+        y: numpy array with dimensions (sequence_lenght,).
+        tolerance: is the number (int) of entries with the same value (0 or 1) to
+            consider as start or end of a segment.
     
-if __name__ == "__main__":    
+    Output:
+        Returns a list with start and finish indexes of the segments in the sequence.
+    """
+    count_1 = 0
+    count_0 = 0
+    is_segment = False
+    segments_list = []
+    start = None
+    finish = None
+    for i in range(y.shape[0]):
+        # if between segments
+        if is_segment is False:
+            if y[i] == 1:
+                if (i==0) or (y[i-1]==1):
+                    count_1 = count_1+1
+                else:
+                    count_1 = 1
+            else:
+                count_1 = 0
+            if count_1 == tolerance:
+                start = i-tolerance+1
+                is_segment = True
+                count_0 = 0
+                count_1 = 0
+        # if in the middle of a segment
+        elif is_segment is True:
+            if y[i] == 0:
+                if (i==0) or (y[i-1]==0):
+                    count_0 = count_0+1
+                else:
+                    count_0 = 1
+            else:
+                count_0 = 0
+            if count_0 == tolerance:
+                finish = i-tolerance
+                is_segment = False
+                segments_list.append([start, finish])
+                count_0 = 0
+                count_1 = 0
+        
+        # if it is the last frame and is in the middle of a segment, end segment
+        if (i == (y.shape[0]-1)) and (is_segment is True):
+            finish = i
+            is_segment = False
+            segments_list.append([start, finish])
+            count_0 = 0
+            count_1 = 0
+
+    return segments_list
+    
+if __name__ == "__main__":
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
     # read tfrecord file
     dataset = tf.data.TFRecordDataset(filenames=[FLAGS.dataset_path])
     features = TF_POSE_RECORD_DESCRIPTION
@@ -136,14 +199,35 @@ if __name__ == "__main__":
     dataset = batch_dataset(dataset, FLAGS.test_batch_size)
     
     # load model
-    model = keras.models.load_model('models/py/model.h5', compile=False)
+    model = keras.models.load_model('results/models/model_9.h5', compile=False) # change model here
     
     # make prediction
-    pred = model.predict(dataset.cache())[0]
-    output = np.zeros(shape=pred.shape)
-    for frame in range(pred.shape[0]):
-        output[frame] = softmax(pred[frame])
+    predictions = model.predict(dataset.cache())
+
+    # generate outputs
+    for i in range(len(predictions)):
+        pred = predictions[i]
+        output = np.zeros(shape=pred.shape)
+        for frame in range(pred.shape[0]):
+            output[frame] = pred[frame]
+        pred = output[:,1]
     
-    # save output
-    np.savetxt('output.csv', output, delimiter=',')
+        # save output
+        date_time = datetime.datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
+        np.savetxt(f'tests/output_{date_time}_{i}.csv', pred, delimiter=',')
+
+        # convert probabilities to 0 or 1
+        class_pred = np.where(pred>0.5, 1, 0)
+        segments = get_segments(class_pred, 5)
+
+        # draw prediction
+        seconds = np.array(range(len(pred)))/50
+        plt.figure(figsize=(13,3))
+        plt.plot(seconds, pred, color = 'black', alpha = 0.1)
+        for entry in segments:
+            start = entry[0]/50
+            finish = entry[1]/50
+            plt.gca().add_patch(mpatches.Rectangle((start, 0), (finish-start), 1, alpha=0.5, facecolor='green'))
+        plt.axhline(y=0.5, linestyle='--', color='black')
+        plt.savefig(f'tests/pred_{date_time}_{i}.png')
     

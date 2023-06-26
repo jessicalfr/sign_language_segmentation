@@ -74,6 +74,19 @@ A principal métrica utilizada foi a acurácia. Também foi calculada para a bas
 
 O modelo de maior acurácia na base de teste acerta a classificação do frame 92,84% das vezes. A arquitetura do modelo utiliza um LSTM bidirecional, com 64 unidades. Os *keypoints* de input são de pose, mãos e rosto, a taxa de dropout dos inputs é 0,1 e a taxa de aprendizado é 0,01. A acurácia do modelo ao longo das épocas é mostrada a seguir.
 
-![Acurácia do melhor modelo ao logno do treinamento](./results/plots/model_9.png)
+![Acurácia do melhor modelo ao longo do treinamento](./results/plots/model_9.png)
 
-*Abaixo discutir os tipos de erro de segmentação no melhor modelo*
+
+## Executando a inferência
+
+Para executar a inferência em um vídeo do Public DGS Corpus com o melhor modelo obtido, basta seguir os seguintes passos:
+
+1. Fazer download do(s) arquivo(s) `.json` das estimativas de pose do vídeo desejado para a pasta `./tests/`.
+2. Criar um arquivo `tfrecord` com base no json: `python3 preprocessing/build_tfrecord.py --skel ./tests/ --type_skel DGS --fps 50 --output ./tests/example.tfrecord`
+3. Executar a inferência: `python3 inference.py --dataset_path ./tests/example.tfrecord`.
+
+Na pasta `./tests/` aparecerão os arquivos de output do modelo. Caso o arquivo `.json` contenha informação tanto da câmera A quanto da câmera B, teremos predições para as duas câmeras.
+
+Abaixo um exemplo de predição para um vídeo do dataset.
+
+![Exemplo de predição do modelo](./tests/pred_26-06-2023_17-52-28_0.png)
