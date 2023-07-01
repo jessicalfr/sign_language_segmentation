@@ -2,6 +2,8 @@
 
 Dado um vídeo de entrada onde uma pessoa está sinalizando em língua de sinais, a segmentação é a tarefa que consiste em dividir esse vídeo em *segmentos significativos*. Nesse trabalho, o segmento é definido como uma frase, ou seja, queremos encontrar no vídeo de entrada segmentos de vídeo que representem uma frase cada.
 
+d![Exemplo do problema de segmentação](problema_segmentacao.png)
+
 ## Ambiente de execução
 
 Esse repositório contém um `Dockerfile` com a descrição de um ambiente docker que faz a execução de todos os experimentos. No processamento foi utilizada uma placa de vídeo NVIDIA GeForce RTX 3050.
