@@ -78,10 +78,18 @@ O modelo de maior acurácia na base de teste acerta a classificação do frame 9
 
 ![Acurácia do melhor modelo ao longo do treinamento](./results/plots/model_9.png)
 
+Todos os logs dos experimentos, gráficos de acurácia por época, modelos gerados e predições na base de teste para cada modelo podem ser encontrados na pasta `results` desse repositório.
+
+**Para repetir o treinamento no DGS Corpus (demora algumas horas pra treinar cada modelo):**
+
+* Executa todos os experimentos: `python3 experiments.py --dataset_path data/dgs_corpus.tfrecord`
+
+* Treina um modelo com os melhores hiperparâmetros encontrados: `python3 train.py --encoder_bidirectional --hidden_size 64 --input_components pose_keypoints_2d --input_components face_keypoints_2d --input_components hand_left_keypoints_2d --input_components hand_right_keypoints_2d --learning_rate 0.01 --input_dropout 0.1 --model_path results/models/model.h5 --dataset_path data/dgs_corpus.tfrecord > results/logs/experiment.log`
+
 
 ## Executando a inferência
 
-Para executar a inferência em um vídeo do Public DGS Corpus com o melhor modelo obtido, basta seguir os seguintes passos:
+Para executar a inferência em um vídeo do Public DGS Corpus com o melhor modelo obtido:
 
 1. Fazer download do(s) arquivo(s) `.json` das estimativas de pose do vídeo desejado para a pasta `./tests/`.
 2. Criar um arquivo `tfrecord` com base no json: `python3 preprocessing/build_tfrecord.py --skel ./tests/ --type_skel DGS --fps 50 --output ./tests/example.tfrecord`
