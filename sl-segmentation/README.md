@@ -91,7 +91,7 @@ Todos os logs dos experimentos, gráficos de acurácia por época, modelos gerad
 
 Para executar a inferência em um vídeo do Public DGS Corpus com o melhor modelo obtido:
 
-1. Fazer download do(s) arquivo(s) `.json` das estimativas de pose do vídeo desejado para a pasta `./tests/`.
+1. Fazer download do(s) arquivo(s) `.json` das estimativas de pose do vídeo desejado para a pasta `./tests/`. Já tem um exemplo nessa pasta nesse repositório.
 2. Criar um arquivo `tfrecord` com base no json: `python3 preprocessing/build_tfrecord.py --skel ./tests/ --type_skel DGS --fps 50 --output ./tests/example.tfrecord`
 3. Executar a inferência: `python3 inference.py --dataset_path ./tests/example.tfrecord`.
 
