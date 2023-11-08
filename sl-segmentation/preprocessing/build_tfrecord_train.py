@@ -25,6 +25,11 @@ import pympi
 import pandas as pd
 
 def get_args():
+    parse = argparse.ArgumentParser()
+    parse.add_argument('--skel', type=str, required=True, help = 'Folder with skeleton information (JSON files)')
+    parse.add_argument('--type_skel', type=str, required=True, help = 'Type of skeleton data ("OpenPose" or "DGS")')
+    parse.add_argument('--annot', type=str, required=True, help = 'Folder with ELAN annotation files')
+    parse.add_argument('--fps', type=int, required=True, help='FPS of the videos')
     parse.add_argument('--output', type=str, required=True, help='Name of resulting the tfrecord file', default='dataset')
     args = parse.parse_args()
     return args
